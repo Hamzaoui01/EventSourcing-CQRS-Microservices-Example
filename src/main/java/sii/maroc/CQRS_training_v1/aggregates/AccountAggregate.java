@@ -1,10 +1,10 @@
 package sii.maroc.CQRS_training_v1.aggregates;
 
 import org.axonframework.commandhandling.CommandHandler;
-import org.axonframework.commandhandling.model.AggregateIdentifier;
-import org.axonframework.commandhandling.model.AggregateLifecycle;
-import org.axonframework.commandhandling.model.AggregateRoot;
+
 import org.axonframework.eventsourcing.EventSourcingHandler;
+import org.axonframework.modelling.command.AggregateIdentifier;
+import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 import sii.maroc.CQRS_training_v1.commands.CreateAccountCommand;
 import sii.maroc.CQRS_training_v1.commands.CreditMoneyCommand;
@@ -24,6 +24,8 @@ public class AccountAggregate {
         AggregateLifecycle.apply(new AccountCreatedEvent(createAccountCommand.id, createAccountCommand.accountBalance, createAccountCommand.currency));
     }
 
+    public AccountAggregate()
+    {};
     @EventSourcingHandler
     protected void on(AccountCreatedEvent accountCreatedEvent){
         this.id = accountCreatedEvent.id;
@@ -54,12 +56,27 @@ public class AccountAggregate {
     @EventSourcingHandler
     protected void on(MoneyDebitedEvent moneyDebitedEvent){
         if (this.accountBalance >= 0 & (this.accountBalance - moneyDebitedEvent.debitAmount) < 0){
-            AggregateLifecycle.apply(new AccountHeldEvent(this.id,"HOLD"));
         }
         this.accountBalance -= moneyDebitedEvent.debitAmount;
     }
     @EventSourcingHandler
     protected void on(AccountHeldEvent accountHeldEvent){
         this.status = String.valueOf(accountHeldEvent.status);
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public double getAccountBalance() {
+        return this.accountBalance;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

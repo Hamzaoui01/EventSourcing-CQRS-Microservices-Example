@@ -1,7 +1,7 @@
 package sii.maroc.CQRS_training_v1.bases;
 
 
-import org.axonframework.commandhandling.TargetAggregateIdentifier;
+import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 public class BaseCommand<T> {
     @TargetAggregateIdentifier
